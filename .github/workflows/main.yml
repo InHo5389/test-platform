@@ -28,7 +28,7 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            ./dist s3://여러분의S3버킷이름
+            ./dist s3://mbti-platform-test
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v1
