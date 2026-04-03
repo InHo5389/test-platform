@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { fetchResultBySeason } from '../tools/mockApi';
+import { eventSenderGA, fetchResultBySeason } from '../tools/mockApi';
 import type { PersonalColorResult, PersonalColorSeason } from '../types';
 
 export default function ResultPage() {
@@ -35,6 +35,7 @@ export default function ResultPage() {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      eventSenderGA('Test', 'Test Copy Link', id);
     } catch {
       // fallback for unsupported environments
     }
@@ -71,7 +72,7 @@ export default function ResultPage() {
             </p>
           </div>
           <button
-            onClick={() => setRevealed(true)}
+            onClick={() => { eventSenderGA('Test', 'Test View Reult', id); setRevealed(true); }}
             className="w-full py-4 rounded-2xl text-white font-bold text-base transition-transform active:scale-95"
             style={{ background: 'linear-gradient(135deg, #f7a97c, #b8a9c9)' }}
           >
@@ -181,7 +182,7 @@ export default function ResultPage() {
               </button>
             </div>
             <button
-              onClick={() => navigate(`/test/${id}`)}
+              onClick={() => { eventSenderGA('Test', 'Test Retry Button', id); navigate(`/test/${id}`); }}
               className="w-full py-3.5 rounded-2xl border border-gray-200 text-gray-500 text-sm font-semibold hover:bg-gray-50 active:scale-95 transition-all"
             >
               🔄 다시 하기

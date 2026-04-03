@@ -1,5 +1,7 @@
 import { TESTS } from '../data/TESTS';
 import type { Test, PersonalColorResult, PersonalColorSeason } from '../types';
+import ReactGA4 from 'react-ga4';
+
 
 const FAKE_DELAY = 400;
 
@@ -39,3 +41,15 @@ export function calculateSeason(answers: PersonalColorSeason[]): PersonalColorSe
   });
   return (Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0] as PersonalColorSeason);
 }
+
+export const eventSenderGA = (
+  category: string,
+  action: string,
+  label?: string 
+): void => {
+  ReactGA4.event({
+    category,
+    action,
+    label
+  });
+};

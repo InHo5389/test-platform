@@ -1,3 +1,4 @@
+import { eventSenderGA } from '../tools/mockApi';
 import type { TestInfo } from '../types';
 
 interface TestIntroProps {
@@ -6,6 +7,11 @@ interface TestIntroProps {
 }
 
 export default function TestIntro({ info, onStart }: TestIntroProps) {
+  const handleStart = () => {
+    eventSenderGA('Test', 'Test Start Button', info.mainUrl);
+    onStart();
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* 썸네일 + 제목 영역 */}
@@ -55,7 +61,7 @@ export default function TestIntro({ info, onStart }: TestIntroProps) {
       {/* 시작 버튼 */}
       <div className="px-5 py-4 border-b border-gray-100">
         <button
-          onClick={onStart}
+          onClick={handleStart}
           className="w-full py-4 rounded-xl text-white font-bold text-base transition-transform active:scale-95"
           style={{ backgroundColor: '#4B6FFF' }}
         >

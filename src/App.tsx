@@ -3,7 +3,7 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import TestPage from './pages/TestPage';
 import ResultPage from './pages/ResultPage';
-import { useEffect } from "react";
+import { useEffect } from 'react';
 import ReactGA from "react-ga4";
 
 function App() {
