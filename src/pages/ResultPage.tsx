@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { eventSenderGA, fetchResultBySeason } from '../tools/mockApi';
 import type { PersonalColorResult, PersonalColorSeason } from '../types';
+import AffiliateButton from '../components/AffiliateButton';
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +16,18 @@ export default function ResultPage() {
 
   const season = searchParams.get('season') as PersonalColorSeason | null;
 
+  const cookieKey = `affiliate_${id}`;
+
+  const setRevealedWithCookie = () => {
+    const expires = new Date(Date.now() + 2 * 60 * 60 * 1000).toUTCString();
+    document.cookie = `${cookieKey}=true; expires=${expires}; path=/`;
+    setRevealed(true);
+  };
+
+  const checkRevealedCookie = () => {
+    return document.cookie.split('; ').some((c) => c === `${cookieKey}=true`);
+  };
+
   useEffect(() => {
     if (!id || !season) {
       navigate('/');
@@ -26,6 +39,7 @@ export default function ResultPage() {
         return;
       }
       setResult(data);
+      if (checkRevealedCookie()) setRevealed(true);
       setLoading(false);
     });
   }, [id, season, navigate]);
@@ -57,30 +71,10 @@ export default function ResultPage() {
   if (!result) return null;
 
   return (
-    <div className="min-h-screen flex flex-col pb-10">
-      {/* 결과 공개 전 */}
-      {!revealed ? (
-        <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
-          <div
-            className="w-24 h-24 rounded-full shadow-lg"
-            style={{ backgroundColor: result.hex }}
-          />
-          <div>
-            <p className="text-sm text-gray-400">테스트 완료!</p>
-            <p className="text-lg font-bold text-gray-700 mt-1">
-              당신의 퍼스널 컬러를 확인해보세요
-            </p>
-          </div>
-          <button
-            onClick={() => { eventSenderGA('Test', 'Test View Reult', id); setRevealed(true); }}
-            className="w-full py-4 rounded-2xl text-white font-bold text-base transition-transform active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #f7a97c, #b8a9c9)' }}
-          >
-            결과 보기 🎨
-          </button>
-        </div>
-      ) : (
-        <>
+    <div className="flex flex-col pb-10">
+      {/* 결과 콘텐츠 — 항상 렌더링, revealed 여부에 따라 잘림 */}
+      <div className="relative">
+        <div style={!revealed ? { maxHeight: '400px', overflow: 'hidden' } : undefined}>
           {/* 결과 헤더 */}
           <div
             className="w-full pt-14 pb-10 flex flex-col items-center text-center px-6"
@@ -160,36 +154,53 @@ export default function ResultPage() {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-gray-100 mx-6 my-2" />
-
-          {/* 공유 / 다시하기 버튼 */}
-          <div className="px-6 pt-4 flex flex-col gap-3">
-            <p className="text-xs text-center text-gray-400">결과를 공유해보세요!</p>
-            <div className="flex gap-2">
-              <button
-                onClick={handleCopyLink}
-                className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 active:scale-95 transition-all"
-              >
-                {copied ? '✅ 복사됨!' : '🔗 링크 복사'}
-              </button>
-              <button
-                onClick={handleKakaoShare}
-                className="flex-1 py-3.5 rounded-2xl text-sm font-semibold active:scale-95 transition-all text-gray-800"
-                style={{ backgroundColor: '#FEE500' }}
-              >
-                💬 카카오 공유
-              </button>
-            </div>
-            <button
-              onClick={() => { eventSenderGA('Test', 'Test Retry Button', id); navigate(`/test/${id}`); }}
-              className="w-full py-3.5 rounded-2xl border border-gray-200 text-gray-500 text-sm font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+        {/* 잠금 오버레이 */}
+        {!revealed && (
+          <div
+            className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-6 px-6 pt-24"
+            style={{ background: 'linear-gradient(to bottom, transparent, white 60%)' }}
+          >
+            <p className="text-sm text-gray-400 mb-3">전체 결과를 확인해보세요</p>
+            <AffiliateButton
+              href="https://link.coupang.com/a/eiaCva"
+              onClick={() => { eventSenderGA('Test', 'Test View Reult', id); setRevealedWithCookie(); }}
+              className="w-full py-4 rounded-2xl text-white font-bold text-base transition-transform active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #f7a97c, #b8a9c9)' }}
             >
-              🔄 다시 하기
-            </button>
+              버튼 누르고 결과 보기
+            </AffiliateButton>
           </div>
-        </>
-      )}
+        )}
+      </div>
+
+      {/* 공유 / 다시하기 버튼 */}
+      <div className="h-px bg-gray-100 mx-6 my-2" />
+      <div className="px-6 pt-4 flex flex-col gap-3">
+        <p className="text-xs text-center text-gray-400">결과를 공유해보세요!</p>
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopyLink}
+            className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+          >
+            {copied ? '✅ 복사됨!' : '🔗 링크 복사'}
+          </button>
+          <button
+            onClick={handleKakaoShare}
+            className="flex-1 py-3.5 rounded-2xl text-sm font-semibold active:scale-95 transition-all text-gray-800"
+            style={{ backgroundColor: '#FEE500' }}
+          >
+            💬 카카오 공유
+          </button>
+        </div>
+        <button
+          onClick={() => { eventSenderGA('Test', 'Test Retry Button', id); navigate(`/test/${id}`); }}
+          className="w-full py-3.5 rounded-2xl border border-gray-200 text-gray-500 text-sm font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+        >
+          🔄 다시 하기
+        </button>
+      </div>
     </div>
   );
 }

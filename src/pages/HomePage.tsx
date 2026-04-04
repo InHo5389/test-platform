@@ -15,7 +15,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col">
+    <div className="w-full flex flex-col">
       {/* 테스트 목록 */}
       <main className="flex-1 px-6 py-5">
         {loading ? (

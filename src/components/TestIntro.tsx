@@ -1,5 +1,7 @@
 import { eventSenderGA } from '../tools/mockApi';
 import type { TestInfo } from '../types';
+import KakaoAdfit from './KakaoAdfit';
+import CoupangBanner from './CoupangBanner';
 
 interface TestIntroProps {
   info: TestInfo;
@@ -56,6 +58,14 @@ export default function TestIntro({ info, onStart }: TestIntroProps) {
             # {tag}
           </span>
         ))}
+      </div>
+
+      {/* 광고 */}
+      <div className="flex justify-center py-3">
+        <KakaoAdfit adUnit="DAN-7hs5CjmrI10XA1Jd" adWidth="320" adHeight="100" />
+      </div>
+      <div className="flex justify-center py-3">
+        <CoupangBanner id="978084" />
       </div>
 
       {/* 시작 버튼 */}
