@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchTestById, calculateSeason } from '../tools/mockApi';
 import ProgressBar from '../components/ProgressBar';
 import TestIntro from '../components/TestIntro';
+import MetatagRenderer from '../components/MetatagRenderer';
 import type { Test, Question, PersonalColorSeason } from '../types';
 
 type PageState = 'loading' | 'intro' | 'quiz' | 'calculating';
@@ -106,7 +107,12 @@ export default function TestPage() {
 
   // ── 인트로 ──
   if (pageState === 'intro') {
-    return <TestIntro info={test!.info} onStart={() => setPageState('quiz')} />;
+    return (
+      <>
+        <MetatagRenderer info={test!.info} path={`/test/${id}`} />
+        <TestIntro info={test!.info} onStart={() => setPageState('quiz')} />
+      </>
+    );
   }
 
   // ── 퀴즈 ──
@@ -114,6 +120,7 @@ export default function TestPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <MetatagRenderer info={test!.info} path={`/test/${id}`} />
       <ProgressBar current={currentIndex + 1} total={shuffledQuestions.length} />
 
       <div className="flex-1 flex flex-col px-6 pt-6 pb-8">

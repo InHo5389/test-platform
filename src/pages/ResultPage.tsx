@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { eventSenderGA, fetchResultBySeason } from '../tools/mockApi';
 import type { PersonalColorResult, PersonalColorSeason } from '../types';
 import AffiliateButton from '../components/AffiliateButton';
+import MetatagRenderer from '../components/MetatagRenderer';
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
@@ -72,6 +73,11 @@ export default function ResultPage() {
 
   return (
     <div className="flex flex-col pb-10">
+      <MetatagRenderer
+        title={`${result.colorName} 퍼스널 컬러 결과 | 알아보개`}
+        description={result.description}
+        path={`/result/${id}`}
+      />
       {/* 결과 콘텐츠 — 항상 렌더링, revealed 여부에 따라 잘림 */}
       <div className="relative">
         <div style={!revealed ? { maxHeight: '400px', overflow: 'hidden' } : undefined}>

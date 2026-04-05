@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchTests } from '../tools/mockApi';
 import TestCard from '../components/TestCard';
+import MetatagRenderer from '../components/MetatagRenderer';
 import type { Test } from '../types';
 
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
 
   return (
     <div className="w-full flex flex-col">
+      <MetatagRenderer path="/" />
       {/* 테스트 목록 */}
       <main className="flex-1 px-6 py-5">
         {loading ? (

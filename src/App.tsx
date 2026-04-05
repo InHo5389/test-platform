@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import TestPage from './pages/TestPage';
@@ -20,16 +21,18 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/test/:id" element={<TestPage />} />
-          <Route path="/result/:id" element={<ResultPage />} />
-          <Route path="/privacy" element={<PrivacyPolicyPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/test/:id" element={<TestPage />} />
+            <Route path="/result/:id" element={<ResultPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
