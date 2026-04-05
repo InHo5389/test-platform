@@ -12,6 +12,7 @@
   "dependencies": {
     "@prerenderer/renderer-puppeteer": "^1.2.4",
     "@prerenderer/rollup-plugin": "^0.3.12",
+    "@sparticuz/chromium": "^143.0.4",
     "puppeteer": "^24.40.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

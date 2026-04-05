@@ -4,9 +4,25 @@ import tailwindcss from "@tailwindcss/vite";
 import prerender from "@prerenderer/rollup-plugin";
 import PuppeteerRenderer from "@prerenderer/renderer-puppeteer";
 import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium";
 
-// https://vite.dev/config/
-export default defineConfig({
+const isVercel = process.env.VERCEL === "1";
+
+const getExecutablePath = async () => {
+  if (isVercel) {
+    return await chromium.executablePath();
+  }
+  return puppeteer.executablePath();
+};
+
+const getLaunchArgs = () => {
+  if (isVercel) {
+    return chromium.args;
+  }
+  return ["--no-sandbox", "--disable-setuid-sandbox"];
+};
+
+export default defineConfig(async () => ({
   plugins: [
     react(),
     tailwindcss(),
@@ -18,8 +34,8 @@ export default defineConfig({
         maxConcurrentRoutes: 1,
         renderAfterTime: 2000,
         launchOptions: {
-          executablePath: puppeteer.executablePath(),
-          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          executablePath: await getExecutablePath(),
+          args: getLaunchArgs(),
         },
       },
       postProcess(renderedRoute) {
@@ -29,4 +45,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));
